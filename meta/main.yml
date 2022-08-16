@@ -1,6 +1,6 @@
 galaxy_info:
   author: fbbit@hotmail.com
-  description: Update EL8
+  description: A Ansible role for updating EL8(RHEL8/OEL8/Centos8) to a specified minor version.
   company: 
 
   # If the issue tracker for your role is not on github, uncomment the
