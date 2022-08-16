@@ -1,0 +1,36 @@
+---
+- name: Update OS
+  block:
+  - name: Set nobest in dnf.conf
+    lineinfile:
+      dest: /etc/dnf/dnf.conf
+      regexp: "^best="
+      line: "best=False"
+
+  # tasks file for update-el8
+  - include_tasks: rhel.yml
+    when: ansible_lsb.id == 'RedHatEnterprise'
+
+  - include_tasks: centos.yml
+    when: ansible_lsb.id == 'CentOS'
+
+  - include_tasks: oel.yml
+    when: ansible_lsb.id == 'OracleServer'
+
+  - name: Success message
+    debug: 
+      msg: "OK: System is up to date."
+  
+  # Server will not reboot while running on localhost
+  # - name: Reboot when packages were updated
+  #   reboot:
+  #     post_reboot_delay: 5
+  #     msg: "OK: System is going to reboot..."
+  #   when: 
+  #     - update_status.changed
+  #     - reboot
+
+  rescue:
+    - name: Failed message
+      debug:
+        msg: "Failed: Failed to complete update process!"

@@ -1,0 +1,25 @@
+# Update Centos
+- name: Install version lock plugin
+  dnf:
+    name: python3-dnf-plugin-versionlock
+    state: latest
+
+- name: Specific release for Centos
+  shell: "dnf versionlock centos-release-{{ release }}*"
+  ignore_errors: yes
+  when: release != ""
+
+- name: Check release setting
+  shell: dnf versionlock list
+  register: versionlock_stat
+  ignore_errors: yes
+
+- name: End play if version lock failed
+  fail:
+    msg: "Error: Unable to determine release number!"
+  when: "release not in versionlock_stat.stdout"
+
+- name: Upgrade all packages
+  dnf:
+    name: "*"
+    state: latest

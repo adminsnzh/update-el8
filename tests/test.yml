@@ -1,0 +1,11 @@
+---
+- hosts: localhost
+  remote_user: root
+  # roles:
+  #   - update-el8
+
+  tasks:
+  - name: using role
+    import_role:
+      name: update-el8
+    # vars: 

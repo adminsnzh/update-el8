@@ -1,0 +1,24 @@
+# Update RHEL
+- name: Specific release
+  rhsm_release:
+    release: "{{ release }}"
+  when: release != ""
+
+- name: Check release setting
+  shell: subscription-manager release
+  register: subscription_stat
+  ignore_errors: yes
+
+- name: End play if version lock failed
+  fail:
+    msg: "Error: Unable to determine release number!"
+  when: "release not in subscription_stat.stdout"
+
+- name: Upgrade all packages
+  dnf:
+    name: "*"
+    disablerepo: "*"
+    enablerepo: "{{ my_repo }}"
+    state: latest
+  register: update_status
+  check_mode: no
